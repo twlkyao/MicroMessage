@@ -6,7 +6,12 @@
 	//define your token
 	header("Content-type: textml; charset=gb2312"); 
 
-	define("TOKEN", "AlienTech");
+	define("TOKEN", "AlienTech"); // Define TOKEN.
+	define("HELP", "欢迎关注【AlienTech】"."\n"."使用帮助:【1】查Ripple价格，如输入：xrp"
+		."\n【2】查LTC价格，如输入：ltc"); // Define HELP.
+	define("ABOUT", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。"); // Define ABOUT.
+	define("WELCOME", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。");
+	
 	$wechatObj = new wechatCallbackapiTest();
 
 	//$wechatObj->valid(); // Validate the signature.
@@ -81,7 +86,11 @@
 						</xml>";    // The message format.         
 			if(!empty( $keyword )) {
 				$msgType = "text";
-				$contentStr = "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。";
+				if(strtolower($keyword) == "xrp") {
+					$contentStr = "Ripple";
+				} else if(strtolower($keyword) == "ltc") {
+					$contentStr = "LTC";
+				}
 				$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
 				echo $resultStr;
 			} else {
@@ -96,7 +105,7 @@
 			$contentStr = "";
 			switch($object->Event) {
 				case "subscribe":
-				$contentStr = "欢迎关注【AlienTech】"."\n"."使用帮助:【1】查Ripple价格，如输入：1"."\n";
+				$contentStr = HELP;
 				break;
 				default:
 				$contentStr = "Unknown Event:".$object->Event;
@@ -106,6 +115,22 @@
 			return $resultStr;
 		}	
 			
+		/**
+		 * Response Text message.
+		 */ 
+		public function responseText($object, $content, $flag = 0) {
+			$textTpl = "<xml>
+						<ToUserName><![CDATA[%s]]></ToUserName>
+						<FromUserName><![CDATA[%s]]></FromUserName>
+						<CreateTime>%s</CreateTime>
+						<MsgType><![CDATA[text]]></MsgType>
+						<Content><![CDATA[%s]]></Content>
+						<FuncFlag>%d</FuncFlag>
+						</xml>";
+			$resultStr = sprintf($textTpl, $object->FromUserName, $object->ToUserName, time(), $content, $flag);
+			return $resultStr;
+		}
+		
 		/**
 		 * Check the signature of the WeChat server.
 		 */ 
@@ -126,22 +151,6 @@
 			}else{
 				return false;
 			}
-		}  
-		
-		/**
-		 * Response Text message.
-		 */ 
-		public function responseText($object, $content, $flag = 0) {
-			$textTpl = "<xml>
-						<ToUserName><![CDATA[%s]]></ToUserName>
-						<FromUserName><![CDATA[%s]]></FromUserName>
-						<CreateTime>%s</CreateTime>
-						<MsgType><![CDATA[text]]></MsgType>
-						<Content><![CDATA[%s]]></Content>
-						<FuncFlag>%d</FuncFlag>
-						</xml>";
-			$resultStr = sprintf($textTpl, $object->FromUserName, $object->ToUserName, time(), $content, $flag);
-			return $resultStr;
 		}
 	}
 ?>
