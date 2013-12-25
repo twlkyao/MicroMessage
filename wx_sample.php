@@ -11,7 +11,7 @@
 
 	//$wechatObj->valid(); // Validate the signature.
 
-	$wechatObj->responseMsg();	// Return response message.
+	$wechatObj->responseMsg();	// Call the responseMsg() function to response message.
 
 	/**
 	 * Wechat Callback API class
@@ -41,23 +41,23 @@
 			$postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
 
 			//extract post data
-			if (!empty($postStr)){
+			if (!empty($postStr)){ // Post data is not null.
 				
 				$postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
 				$RX_TYPE = trim($postObj->MsgType); // Get the message type.
-				switch($RX_TYPE) {
-					case "text":
-					$resultStr = $this->handleText($postObj);
-					break;
-					case "event":
-					$resultStr = $this->handleEvent($postObj);
-					break;
+				switch($RX_TYPE) { // Construct response message according to different message type.
+					case "text": // text.
+						$resultStr = $this->handleText($postObj);
+						break;
+					case "event": // event.
+						$resultStr = $this->handleEvent($postObj);
+						break;
 					default:
-					$resultStr = "Unknown msg type!".$RX_TYPE;
-					break;
+						$resultStr = "Unknown msg type!".$RX_TYPE;
+						break;
 				}
-				echo $resultStr;
-			} else { // new added
+				echo $resultStr; // Echo the response message.
+			} else { // Post data is null.
 				echo "";
 				exit;
 			}
@@ -66,10 +66,10 @@
 		/**
 		 * Handle the text message.
 		 */
-		public function handleText($postObj) { // Params it $postObj
-			$fromUsername = $postObj->FromUserName; // The message source ID.将对象$postObj中的消息发送者赋值给$toUsername变量
-			$toUsername = $postObj->ToUserName; // The public account ID.将对象$postObj中的公众账号的ID赋值给$toUsername变量
-			$keyword = trim($postObj->Content); // Get the event.
+		public function handleText($object) {
+			$fromUsername = $object->FromUserName; // The message source ID.将对象$postObj中的消息发送者赋值给$toUsername变量
+			$toUsername = $object->ToUserName; // The public account ID.将对象$postObj中的公众账号的ID赋值给$toUsername变量
+			$keyword = trim($object->Content); // Get the event.
 			$time = time(); // Get current time.
 			$textTpl = "<xml>
 						<ToUserName><![CDATA[%s]]></ToUserName>
@@ -96,7 +96,7 @@
 			$contentStr = "";
 			switch($object->Event) {
 				case "subscribe":
-				$contentStr = "欢迎关注【AlienTech】"."\n"."使用帮助:【1】查Ripple价格，如输入：1"."\n"";
+				$contentStr = "欢迎关注【AlienTech】"."\n"."使用帮助:【1】查Ripple价格，如输入：1"."\n";
 				break;
 				default:
 				$contentStr = "Unknown Event:".$object->Event;
