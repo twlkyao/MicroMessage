@@ -7,10 +7,12 @@
 	header("Content-type: textml; charset=gb2312"); 
 
 	define("TOKEN", "AlienTech"); // Define TOKEN.
-	define("HELP", "欢迎关注【AlienTech】"."\n"."使用帮助:【1】查Ripple价格，如输入：xrp"
-		."\n【2】查LTC价格，如输入：ltc"); // Define HELP.
+	define("HELP", "欢迎关注【AlienTech】"."\n"."使用帮助:\n【1】查Ripple价格，如输入：xrp"
+		."\n【2】查LTC价格，如输入：ltc"."\n【3】查BTC价格，如输入：btc"."\n【4】帮助，如输入：help"); // Define HELP.
 	define("ABOUT", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。"); // Define ABOUT.
 	define("WELCOME", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。");
+	define("SORRY", "不好意思，我还在学习中，请不要生气！");
+	include_once("prices.php"); // Include the prices.php once.
 	
 	$wechatObj = new wechatCallbackapiTest();
 
@@ -84,16 +86,37 @@
 						<Content><![CDATA[%s]]></Content>
 						<FuncFlag>0</FuncFlag>
 						</xml>";    // The message format.         
-			if(!empty( $keyword )) {
+			if(!empty( $keyword )) { // The keyword is not null.
 				$msgType = "text";
-				if(strtolower($keyword) == "xrp") {
+				if(strtolower(trim($keyword)) == "xrp") { // Trim the space and convert to lower case.
 					$contentStr = "Ripple";
-				} else if(strtolower($keyword) == "ltc") {
-					$contentStr = "LTC";
+				} else if(strtolower(trim($keyword)) == "ltc") { // Trim the space and convert to lower case.
+					//$contentStr = "LTC";
+					$price = new prices();
+					$data = $price->price("ltc");
+					$contentStr = "最高价".$data->ticker->high."\n"
+						."买一价：".$data->ticker->buy."\n"
+						."卖一价：".$data->ticker->buy."\n"
+						."最近一次成交价：".$data->ticker->last."\n"
+						."成交量：".$data->ticker->vol;
+				} else if(strtolower(trim($keyword)) == "btc") {
+					//$contentStr = "BTC"
+					$price = new prices();
+					$data = $price->price("btc");
+					
+					$contentStr = "最高价".$data->ticker->high."\n"
+						."买一价：".$data->ticker->buy."\n"
+						."卖一价：".$data->ticker->buy."\n"
+						."最近一次成交价：".$data->ticker->last."\n"
+						."成交量：".$data->ticker->vol;
+				} else if(strtolower(trim($keyword)) == "help") { // Trim the space and convert to lower case.
+					$contentStr = HELP;
+				} else {
+					$contentStr = SORRY;
 				}
-				$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr);
-				echo $resultStr;
-			} else {
+				$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr); // Format the response string.
+				echo $resultStr; // Echo the result.
+			} else { // The keyword is null.
 				echo "Input something...";
 			}
 		}
