@@ -9,9 +9,9 @@ header("Content-type: textml; charset=gb2312");
 define("TOKEN", "AlienTech");
 $wechatObj = new wechatCallbackapiTest();
 $wechatObj->responseMsg();
-//$wechatObj->valid();
+$wechatObj->valid();
 
-$wechatObj->responseMsg();	//返回响应信息
+//$wechatObj->responseMsg();	// Return response message.
 
 class wechatCallbackapiTest
 {
