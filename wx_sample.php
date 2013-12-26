@@ -12,10 +12,11 @@
 		."\n【3】查BTC价格，如输入：btc"
 		."\n【4】翻译，如输入：翻译I love you."
 		."\n【5】聊天机器人，如输入：小黄鸡我喜欢你。"
-		."\n【6】帮助，如输入：help\n"); // Define HELP.
-	define("ABOUT", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。"); // Define ABOUT.
+		."\n【6】帮助，如输入：help"
+		."\n【7】关于，如输入：about"); // Define HELP.
 	define("WELCOME", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。");
 	define("SORRY", "不好意思，我还在学习中，请不要生气！");
+	define("ABOUT", "作者：\n齐士垚，\n西安电子科技大学，\nqishiyao2008@126.com\n回复您想要的功能，没准就会上线哦！");
 	include_once("prices.php"); // Include the prices.php once.
 	
 	$wechatObj = new wechatCallbackapiTest();
@@ -102,7 +103,7 @@
 				$str_simis_word = mb_substr($keyword, 3, 30, "UTF-8"); // Simsimi keyword.
 				
 				if(strtolower(trim($keyword)) == "xrp") { // Trim the space and convert to lower case.
-					$contentStr = "Ripple";
+					$contentStr = "Ripple暂不提供，敬请期待。";
 				} else if(strtolower(trim($keyword)) == "ltc") { // Trim the space and convert to lower case.
 					//$contentStr = "LTC";
 					$price = new prices();
@@ -134,7 +135,9 @@
 					$contentStr = $data;
 				}else if(strtolower(trim($keyword)) == "help") { // Trim the space and convert to lower case.
 					$contentStr = HELP;
-				} else {
+				} else if(strtolower(trim($keyword)) == "about") {
+					$contentStr = ABOUT;
+				}else {
 					$contentStr = SORRY;
 				}
 				$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr); // Format the response string.
