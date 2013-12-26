@@ -8,7 +8,11 @@
 
 	define("TOKEN", "AlienTech"); // Define TOKEN.
 	define("HELP", "欢迎关注【AlienTech】"."\n"."使用帮助:\n【1】查Ripple价格，如输入：xrp"
-		."\n【2】查LTC价格，如输入：ltc"."\n【3】查BTC价格，如输入：btc"."\n【4】翻译，如输入：翻译I love you.\n【5】帮助，如输入：help\n"); // Define HELP.
+		."\n【2】查LTC价格，如输入：ltc"
+		."\n【3】查BTC价格，如输入：btc"
+		."\n【4】翻译，如输入：翻译I love you."
+		."\n【5】聊天机器人，如输入：小黄鸡我喜欢你。"
+		."\n【6】帮助，如输入：help\n"); // Define HELP.
 	define("ABOUT", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。"); // Define ABOUT.
 	define("WELCOME", "AlienTech for Better Life.欢迎来到AlienTech的地盘，这里有最新的科技资讯。");
 	define("SORRY", "不好意思，我还在学习中，请不要生气！");
@@ -89,9 +93,13 @@
 			if(!empty( $keyword )) { // The keyword is not null.
 				$msgType = "text";
 				
-				$str_trans = mb_substr($keyword, 0, 2, "UTF-8"); // Translate key word.
+				$str_trans = mb_substr($keyword, 0, 2, "UTF-8"); // Translate indicator.
 				$str_valid = mb_substr($keyword, 0, -2, "UTF-8"); // Translate content.
-				$str_word = mb_substr($keyword, 2, 220, "UTF-8"); // Translate length.
+				$str_word = mb_substr($keyword, 2, 220, "UTF-8"); // Translate keyword.
+				
+				$str_simis = mb_substr($keyword, 0, 3, "UTF-8"); // Simsimi indicator.
+				$str_simis_valid = mb_substr($keyword, 0, -3, "UTF-8"); // Simsimi content.
+				$str_simis_word = mb_substr($keyword, 3, 30, "UTF-8"); // Simsimi keyword.
 				
 				if(strtolower(trim($keyword)) == "xrp") { // Trim the space and convert to lower case.
 					$contentStr = "Ripple";
@@ -114,14 +122,19 @@
 						."卖一价：".$data->ticker->buy."\n"
 						."最近一次成交价：".$data->ticker->last."\n"
 						."成交量：".$data->ticker->vol;
-				} else if(strtolower(trim($keyword)) == "help") { // Trim the space and convert to lower case.
-					$contentStr = HELP;
 				} else if($str_trans == "翻译" && $str_valid != null) {
 					include_once("translate.php");
 					$translate = new Translation();
 					$data = $translate->youdaoDic($str_word);
 					$contentStr = $data;
-				}else {
+				} else if($str_simis == "小黄鸡" && $str_simis_valid != null) {
+					include_once("simsimi.php");
+					$sim = new Simsimi();
+					$data = $sim->simsimi($str_simis_word);
+					$contentStr = $data;
+				}else if(strtolower(trim($keyword)) == "help") { // Trim the space and convert to lower case.
+					$contentStr = HELP;
+				} else {
 					$contentStr = SORRY;
 				}
 				$resultStr = sprintf($textTpl, $fromUsername, $toUsername, $time, $msgType, $contentStr); // Format the response string.
