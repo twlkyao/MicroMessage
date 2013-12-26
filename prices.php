@@ -3,7 +3,7 @@
     define("BTCADDRESS", "https://www.okcoin.com/api/ticker.do"); // Define BTCADDRESS.
 
 	/**
-	 * 	$price = new price();
+	 * $price = new prices();
 	 * $data = $price->price("ltc");
 	 * echo $data->ticker->high;
 	 */
