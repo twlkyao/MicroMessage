@@ -13,3 +13,4 @@ A project that deals with MicroMessage Platform.
 
 * Add xiaojo chat robot.  
 * Location check.  
+* Whetherforecast.
